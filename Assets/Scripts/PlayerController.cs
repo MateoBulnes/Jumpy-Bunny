@@ -9,27 +9,41 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayerMask;
     public Animator animator;
     public float runSpeed = 3.0f;
+    private static PlayerController sharedInstance;
+
+    private void Awake()
+    {
+        sharedInstance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         animator.SetBool("isAlive", true);
     }
-
+    public static PlayerController GetInstance()
+    {
+        return sharedInstance;
+    }
     private void FixedUpdate()
     {
-        if(rigidBody.velocity.x < runSpeed)
+        GameState currState = GameManager.GetInstance().currentGameState;
+        if (currState == GameState.InGame)
         {
-            rigidBody.velocity = new Vector2(runSpeed, rigidBody.velocity.y);
+            if (rigidBody.velocity.x < runSpeed)
+            {
+                rigidBody.velocity = new Vector2(runSpeed, rigidBody.velocity.y);
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        bool canJump = GameManager.GetInstance().currentGameState == GameState.InGame;
         bool isOnTheGround = IsOnTheGround();
         animator.SetBool("isGrounded", isOnTheGround);
-        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) && isOnTheGround)
+        if (canJump && (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space)) && isOnTheGround)
         {
             Jump();  
         }
@@ -43,5 +57,10 @@ public class PlayerController : MonoBehaviour
     {
         return Physics2D.Raycast(this.transform.position, Vector2.down,
             1.0f, groundLayerMask.value);
+    }
+    public void KillPlayer()
+    {
+        animator.SetBool("isAlive", false);
+        GameManager.GetInstance().GameOver();
     }
 }
