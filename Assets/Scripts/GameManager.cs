@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     // Starts our game
     public void StartGame()
     {
+        PlayerController.GetInstance().StartGame();
         ChangeGameState(GameState.InGame);
     }
     private void Start()
@@ -30,9 +31,10 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetButtonDown("s"))
+        if (Input.GetButtonDown("s") && currentGameState != GameState.InGame)
         {
             ChangeGameState(GameState.InGame);
+            StartGame();
         }
     }
     // Called when player dies

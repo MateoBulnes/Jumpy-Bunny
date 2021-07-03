@@ -10,16 +10,24 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public float runSpeed = 3.0f;
     private static PlayerController sharedInstance;
+    private Vector3 initialPosition;
+    private Vector2 initialVelocity;
 
     private void Awake()
     {
         sharedInstance = this;
+        initialPosition = transform.position;
+        rigidBody = GetComponent<Rigidbody2D>();
+        initialVelocity = rigidBody.velocity;
+        animator.SetBool("isAlive", true);
     }
     // Start is called before the first frame update
-    void Start()
+    public void StartGame()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
         animator.SetBool("isAlive", true);
+        transform.position = initialPosition;
+        rigidBody.velocity = initialVelocity;
+       
     }
     public static PlayerController GetInstance()
     {
