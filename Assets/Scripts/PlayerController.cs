@@ -5,13 +5,15 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rigidBody;
-    public float thrust = 10.0f;
+    public float thrust = 25.0f;
     public LayerMask groundLayerMask;
     public Animator animator;
     public float runSpeed = 7.0f;
+    private float initialGravity;
     private static PlayerController sharedInstance;
     private Vector3 initialPosition;
     private Vector2 initialVelocity;
+    private const string HIGHEST_SCORE_KEY = "highestScore";
 
     private void Awake()
     {
@@ -20,6 +22,7 @@ public class PlayerController : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         initialVelocity = rigidBody.velocity;
         animator.SetBool("isAlive", true);
+        initialGravity = rigidBody.gravityScale;
     }
     // Start is called before the first frame update
     public void StartGame()
@@ -27,7 +30,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isAlive", true);
         transform.position = initialPosition;
         rigidBody.velocity = initialVelocity;
-       
+        rigidBody.gravityScale = initialGravity;
     }
     public static PlayerController GetInstance()
     {
@@ -69,6 +72,24 @@ public class PlayerController : MonoBehaviour
     public void KillPlayer()
     {
         animator.SetBool("isAlive", false);
+        int highestScore = PlayerPrefs.GetInt(HIGHEST_SCORE_KEY);
+        int currentScore = GetDistance();
+        if(currentScore > highestScore)
+        {
+            PlayerPrefs.SetInt(HIGHEST_SCORE_KEY, currentScore);
+        }
+        rigidBody.gravityScale = 0f;
+        rigidBody.velocity = Vector2.zero; // stop the bunny completely
         GameManager.GetInstance().GameOver();
+    }
+
+    public int GetDistance()
+    {
+        var distance = (int) Vector2.Distance(initialPosition, transform.position);
+        return distance;
+    }
+    public int GetMaxScore()
+    {
+        return PlayerPrefs.GetInt(HIGHEST_SCORE_KEY);
     }
 }

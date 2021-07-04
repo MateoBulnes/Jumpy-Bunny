@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public Canvas mainMenu;
     public Canvas gameMenu;
     public Canvas gameOverMenu;
+    private int collectedCoins = 0;
     private void Awake()
     {
         sharedInstance = this;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour
         LevelGenerator.sharedInstance.CreateInitialBlocks();
         PlayerController.GetInstance().StartGame();
         ChangeGameState(GameState.InGame);
+        ViewInGame.GetInstance().ShowHighestScore();
     }
     private void Start()
     {
@@ -49,6 +51,7 @@ public class GameManager : MonoBehaviour
     {
         LevelGenerator.sharedInstance.RemoveAllBlocks();
         ChangeGameState(GameState.GameOver);
+        GameOverView.GetInstance().UpdateGui();
     }
     //Called when the player quits the game and goes back to the main menu
     public void BackToMainMenu()
@@ -79,5 +82,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
         currentGameState = newGameState;
+    }
+    public void CollectCoins()
+    {
+        collectedCoins++;
+        ViewInGame.GetInstance().UpdateCoins();
+    }
+    public int GetCollectedCoins()
+    {
+        return collectedCoins;
     }
 }
