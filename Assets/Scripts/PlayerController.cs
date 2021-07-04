@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public float thrust = 10.0f;
     public LayerMask groundLayerMask;
     public Animator animator;
-    public float runSpeed = 3.0f;
+    public float runSpeed = 7.0f;
     private static PlayerController sharedInstance;
     private Vector3 initialPosition;
     private Vector2 initialVelocity;

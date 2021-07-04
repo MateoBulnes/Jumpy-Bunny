@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum GameState{
     Menu, InGame, GameOver
@@ -10,6 +11,9 @@ public class GameManager : MonoBehaviour
 {
     public GameState currentGameState = GameState.Menu;
     private static GameManager sharedInstance;
+    public Canvas mainMenu;
+    public Canvas gameMenu;
+    public Canvas gameOverMenu;
     private void Awake()
     {
         sharedInstance = this;
@@ -28,6 +32,9 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         currentGameState = GameState.Menu;
+        mainMenu.enabled = true;
+        gameMenu.enabled = false;
+        gameOverMenu.enabled = false;
     }
     private void Update()
     {
@@ -53,13 +60,19 @@ public class GameManager : MonoBehaviour
         switch (newGameState)
         {
             case GameState.Menu:
-                //load main menu scene
+                mainMenu.enabled = true;
+                gameMenu.enabled = false;
+                gameOverMenu.enabled = false;
                 break;
             case GameState.InGame:
-                //Unity scene must show the real game
+                mainMenu.enabled = false;
+                gameMenu.enabled = true;
+                gameOverMenu.enabled = false;
                 break;
             case GameState.GameOver:
-                // show game over scene
+                mainMenu.enabled = false;
+                gameMenu.enabled = false;
+                gameOverMenu.enabled = true;
                 break;
             default:
                 newGameState = GameState.Menu;
