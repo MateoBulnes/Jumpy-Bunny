@@ -18,11 +18,23 @@ public class LevelGenerator : MonoBehaviour
             return _sharedInstance;
         }
     }
+    public byte initialBlockNumber = 2;
     private void Awake()
     {
         _sharedInstance = this;
+        CreateInitialBlocks();
     }
-    
+    public void CreateInitialBlocks()
+    {
+        if(currentBlocks.Count > 0)
+        {
+            return;
+        }
+        for (byte i = 0; i < initialBlockNumber; i++)
+        {
+            AddNewBlock(true);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -34,9 +46,9 @@ public class LevelGenerator : MonoBehaviour
     {
         
     }
-    public void AddNewBlock()
+    public void AddNewBlock(bool initialBlocks = false)
     {
-        int randNumber = Random.Range(0, legoBlocks.Count - 1);
+        int randNumber = initialBlocks? 0: Random.Range(0, legoBlocks.Count);
         var block = Instantiate(legoBlocks[randNumber]); // its the same as using 'new', but its better for unity
         block.transform.SetParent(this.transform); //the block is a child of LevelGenerator
         Vector3 blockPosition = Vector3.zero;
@@ -51,5 +63,18 @@ public class LevelGenerator : MonoBehaviour
         }
         block.transform.position = blockPosition;
         currentBlocks.Add(block);
+    }
+    public void RemoveOldBlock()
+    {
+        var oldBlock = currentBlocks[0];
+        currentBlocks.Remove(oldBlock); 
+        Destroy(oldBlock.gameObject); 
+    }
+    public void RemoveAllBlocks()
+    {
+        while (currentBlocks.Count > 0)
+        {
+            RemoveOldBlock();
+        }
     }
 }

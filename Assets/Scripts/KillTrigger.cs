@@ -8,7 +8,6 @@ public class KillTrigger : MonoBehaviour
     {
         if(element.tag == "Player")
         {
-            print("Bunny has been eliminated");
             PlayerController.GetInstance().KillPlayer();
         }
     }

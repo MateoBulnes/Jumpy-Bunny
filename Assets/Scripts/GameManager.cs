@@ -21,12 +21,12 @@ public class GameManager : MonoBehaviour
     // Starts our game
     public void StartGame()
     {
+        LevelGenerator.sharedInstance.CreateInitialBlocks();
         PlayerController.GetInstance().StartGame();
         ChangeGameState(GameState.InGame);
     }
     private void Start()
     {
-        //StartGame();
         currentGameState = GameState.Menu;
     }
     private void Update()
@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
     // Called when player dies
     public void GameOver()
     {
+        LevelGenerator.sharedInstance.RemoveAllBlocks();
         ChangeGameState(GameState.GameOver);
     }
     //Called when the player quits the game and goes back to the main menu
